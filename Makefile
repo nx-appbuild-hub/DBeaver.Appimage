@@ -5,7 +5,7 @@ OUTPUT="DBeaver.AppImage"
 
 all:
 	echo "Building: $(OUTPUT)"
-	wget -O $(DESTINATION)  $(SOURCE)
+	wget --no-check-certificate --output-document=$(DESTINATION) --continue $(SOURCE)
 	
 	tar -zxvf $(DESTINATION)
 	rm -rf AppDir/opt
