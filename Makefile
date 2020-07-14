@@ -21,12 +21,11 @@ OUTPUT="DBeaver.AppImage"
 all:
 	echo "Building: $(OUTPUT)"
 	wget -O $(DESTINATION)  --continue https://dbeaver.io/files/dbeaver-ce-latest-linux.gtk.x86_64.tar.gz
+	tar -zxvf $(DESTINATION)
 
 	wget --no-check-certificate --output-document=build.rpm --continue https://forensics.cert.org/centos/cert/8/x86_64/jdk-12.0.2_linux-x64_bin.rpm
 	rpm2cpio build.rpm | cpio -idmv
 
-	tar -zxvf $(DESTINATION)
-	rm -rf AppDir/application
 
 	mkdir --parents AppDir/application
 	cp --recursive --force dbeaver/* AppDir/application
