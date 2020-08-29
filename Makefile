@@ -31,7 +31,7 @@ all:
 	cp --recursive --force dbeaver/* AppDir/application
 
 	mkdir --parents AppDir/jre
-	cp --recursive --force usr/java/jdk-12.0.2/* AppDir/jre
+	cp --recursive --force usr/java/jdk-*/* AppDir/jre
 
 
 	chmod +x AppDir/AppRun
