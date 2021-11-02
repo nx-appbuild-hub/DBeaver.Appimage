@@ -14,14 +14,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-DESTINATION="build.tar.gz"
 OUTPUT="DBeaver.AppImage"
 
 
 all:
-	echo "Building: $(OUTPUT)"
-	wget -O $(DESTINATION) https://dbeaver.io/files/dbeaver-ce-latest-stable.x86_64.rpm
-	tar -zxvf $(DESTINATION)
+
+	wget -O build.tar.gz https://dbeaver.io/files/dbeaver-ce-latest-linux.gtk.x86_64.tar.gz
+	tar -zxvf build.tar.gz
 
 	wget --no-check-certificate --output-document=build.rpm --continue https://forensics.cert.org/centos/cert/8/x86_64/jdk-12.0.2_linux-x64_bin.rpm
 	rpm2cpio build.rpm | cpio -idmv
