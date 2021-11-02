@@ -20,7 +20,7 @@ OUTPUT="DBeaver.AppImage"
 
 all:
 	echo "Building: $(OUTPUT)"
-	wget -O $(DESTINATION)  --continue https://dbeaver.io/files/dbeaver-ce-latest-linux.gtk.x86_64.tar.gz
+	wget -O $(DESTINATION) https://dbeaver.io/files/dbeaver-ce-latest-stable.x86_64.rpm
 	tar -zxvf $(DESTINATION)
 
 	wget --no-check-certificate --output-document=build.rpm --continue https://forensics.cert.org/centos/cert/8/x86_64/jdk-12.0.2_linux-x64_bin.rpm
