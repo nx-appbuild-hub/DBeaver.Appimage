@@ -1,47 +1,36 @@
-# This software is a part of the A.O.D (https://apprepo.de) project
 # Copyright 2020 Alex Woroschilow (alex.woroschilow@gmail.com)
 #
-# This program is free software; you can redistribute it and/or
-# modify it under the terms of the GNU General Public License
-# as published by the Free Software Foundation; either version 2
-# of the License, or (at your option) any later version.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# http://www.apache.org/licenses/LICENSE-2.0
 #
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-DESTINATION="build.tar.gz"
-OUTPUT="DBeaver.AppImage"
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+PWD := $(shell pwd)
+
+DOCKER_COMPOSE:=docker-compose -f $(PWD)/docker-compose.yaml
+
+.EXPORT_ALL_VARIABLES:
+CID=$(shell basename $(PWD) | tr -cd '[:alnum:]' | tr A-Z a-z)
+UID=$(shell id -u)
+GID=$(shell id -g)
+
+.PHONY: all
 
 
-all:
-	echo "Building: $(OUTPUT)"
-	wget -O $(DESTINATION)  --continue https://dbeaver.io/files/dbeaver-ce-latest-linux.gtk.x86_64.tar.gz
-	tar -zxvf $(DESTINATION)
+all: clean
+	$(DOCKER_COMPOSE) stop
+	$(DOCKER_COMPOSE) up --build --no-start
+	$(DOCKER_COMPOSE) up -d  "appimage"
+	$(DOCKER_COMPOSE) run    "appimage" make all
+	$(DOCKER_COMPOSE) run    "appimage" chown -R $(UID):$(GID) ./
+	$(DOCKER_COMPOSE) stop
 
-	wget --no-check-certificate --output-document=build.rpm --continue https://forensics.cert.org/centos/cert/8/x86_64/jdk-12.0.2_linux-x64_bin.rpm
-	rpm2cpio build.rpm | cpio -idmv
+clean:
+	$(DOCKER_COMPOSE) up -d  "appimage"
+	$(DOCKER_COMPOSE) run    "appimage" make clean
+	$(DOCKER_COMPOSE) rm --stop --force
 
-
-	mkdir --parents AppDir/application
-	cp --recursive --force dbeaver/* AppDir/application
-
-	mkdir --parents AppDir/jre
-	cp --recursive --force usr/java/jdk-*/* AppDir/jre
-
-
-	chmod +x AppDir/AppRun
-
-	export ARCH=x86_64 && bin/appimagetool.AppImage AppDir $(OUTPUT)
-	chmod +x $(OUTPUT)
-
-	rm -f $(DESTINATION)
-	rm -rf *.rpm *.gz *.deb *.zip
-	rm -rf AppDir/application
-	rm -rf AppDir/jre
-	rm -rf dbeaver
-	rm -rf usr
