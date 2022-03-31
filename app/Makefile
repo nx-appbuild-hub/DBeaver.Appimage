@@ -20,20 +20,25 @@ PWD:=$(shell pwd)
 
 all: clean init
 
+	mkdir --parents $(PWD)/build/Boilerplate.AppDir/jre
 	mkdir --parents $(PWD)/build/Boilerplate.AppDir/dbeaver
 	$(PWD)/bin/Apprepo.AppImage --destination=$(PWD)/build appdir boilerplate \
-		libgdk-pixbuf2.0-0 libatk1.0-0 libatk-bridge2.0-0 libgtk2.0-0 default-jdk
+		libgdk-pixbuf2.0-0 libatk1.0-0 libatk-bridge2.0-0 libgtk2.0-0
+
+	wget --output-document=$(PWD)/build/build.rpm --continue https://forensics.cert.org/centos/cert/8/x86_64/jdk-12.0.2_linux-x64_bin.rpm
+	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
 
 	wget --output-document=${PWD}/build/build.tar.gz https://dbeaver.io/files/dbeaver-ce-latest-linux.gtk.x86_64.tar.gz
 	tar -zxvf ${PWD}/build/build.tar.gz  --directory ${PWD}/build/
 
 	echo ''                                                           >> $(PWD)/build/Boilerplate.AppDir/AppRun
 	echo ''                                                           >> $(PWD)/build/Boilerplate.AppDir/AppRun
-	echo 'PATH=$${PATH}:$${PATH}/lib64/jvm/default-java/bin'          >> $(PWD)/build/Boilerplate.AppDir/AppRun
+	echo 'PATH=$${PATH}:$${APPDIR}/jre/bin'                           >> $(PWD)/build/Boilerplate.AppDir/AppRun
 	echo 'export PATH=$${PATH}'                                       >> $(PWD)/build/Boilerplate.AppDir/AppRun
 	echo ''                                                           >> $(PWD)/build/Boilerplate.AppDir/AppRun
 	echo ''                                                           >> $(PWD)/build/Boilerplate.AppDir/AppRun
 	echo 'LD_LIBRARY_PATH=$${LD_LIBRARY_PATH}:$${APPDIR}/dbeaver'     >> $(PWD)/build/Boilerplate.AppDir/AppRun
+	echo 'LD_LIBRARY_PATH=$${LD_LIBRARY_PATH}:$${APPDIR}/jre'         >> $(PWD)/build/Boilerplate.AppDir/AppRun
 	echo 'export LD_LIBRARY_PATH=$${LD_LIBRARY_PATH}'                 >> $(PWD)/build/Boilerplate.AppDir/AppRun
 	echo ''                                                           >> $(PWD)/build/Boilerplate.AppDir/AppRun
 	echo ''                                                           >> $(PWD)/build/Boilerplate.AppDir/AppRun
