@@ -22,7 +22,7 @@ all: clean init
 
 	mkdir --parents $(PWD)/build/Boilerplate.AppDir/dbeaver
 	$(PWD)/bin/Apprepo.AppImage --destination=$(PWD)/build appdir boilerplate \
-		libgdk-pixbuf2.0-0 libatk1.0-0 libatk-bridge2.0-0 libgtk2.0-0
+		libreadline8
 
 	wget --output-document=${PWD}/build/build.tar.gz https://dbeaver.io/files/dbeaver-ce-latest-linux.gtk.x86_64.tar.gz
 	tar -zxvf ${PWD}/build/build.tar.gz  --directory ${PWD}/build/
